@@ -61,24 +61,6 @@ class UserManager(models.Manager):
         return errors
 
 #=========================================================================================
-    def login_basic_validator(self, postData):
-        errors={}
-        EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
-
-        if not postData["email"]:
-            errors["email"] = "Please enter your email "
-
-        elif not EMAIL_REGEX.match(postData['email']):            
-            errors['email'] = "Invalid email address!"
-#==========================================================================================
-        if not postData["password"]: 
-            errors["password"] = "Please enter your password "
-            
-        elif len(postData['password']) < 8 :
-            errors["password"] = "Password should be at least 8 characters"
-
-        return errors
-#==========================================================================================
     def update_basic_validator(self, postData,user = None):
         errors={}
         EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
@@ -132,8 +114,7 @@ class Message(models.Model):
     message = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey(
-        User, related_name="messages", on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name="messages", on_delete=models.CASCADE)
     for_user = models.ForeignKey(User,related_name="usermessages", on_delete=models.CASCADE,blank=True,null=True)
         
 

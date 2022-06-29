@@ -42,28 +42,21 @@ def signin(request):
     if request.method == "POST":
         email = request.POST["email"]
         password = request.POST["password"]
-        errors = User.objects.login_basic_validator(request.POST)
-        if len(errors) > 0:
-            for key, value in errors.items():
-                messages.error(request, value)
-            return redirect("/signin")
-        else:
-            try:
+        try:
                 user = User.objects.get(email=email)
                 if bcrypt.checkpw(password.encode(), user.password.encode()):
                     request.session["loggedInUser"] = user.id
+                    request.session["name"] = user.first_name
                     request.session["userLevel"] = user.is_admin
                     if user.is_admin == True:
                         return redirect("dashboard/admin")
                     if user.is_admin == False:
                         return redirect("dashboard/users")
-                else:
-                    messages.error(request, "Incorrect Password")
-            except User.DoesNotExist:
-                messages.error(
-                    request, "You do not have an account ,Please Register first !")
+                messages.error(request, "incorrect Password")    
+        except User.DoesNotExist:
+                messages.error(request, "You do not have an account ,Please Register first !")
+               
     return render(request, "signin.html")
-
 
 def dashboard(request):
     if "loggedInUser" in request.session:
@@ -120,11 +113,14 @@ def addUser(request):
             return redirect("/users/new")
     return render(request, "addUser.html")
 
-
+#deleted the user & his/her msgs comments 
 def removeUser(request, userId):
-    User.objects.get(id=userId).delete()
-    print("removed...")
-    return redirect("/dashboard/admin")
+        user = User.objects.get(id=userId)
+        Message.objects.filter(user_id=userId).delete()
+        Comment.objects.filter(user_id=userId).delete()
+        user.delete()
+        print("removed...")
+        return redirect("/dashboard/admin")
 
 # when normal user click on profile in nav , view the info & allow alter
 
@@ -253,7 +249,7 @@ def userEditDesc(request, userId):
 
 def show_user(request, id):
     context = {
-        'user': User.objects.get(id=id),
+        "user": User.objects.get(id=id),
     }
     return render(request, "userShow.html", context)
 

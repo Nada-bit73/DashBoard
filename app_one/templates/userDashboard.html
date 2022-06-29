@@ -24,11 +24,11 @@
                                         {{user.id}}
                                     </td>
                                     <td scope="row">
-                                        <form class="form align-items-center" action="/users/show/{{user.id}}"
-                                            method="POST">
+                    <form class="form align-items-center" action="/users/show/{{ user.id }}" method="POST">
+                                           
                                             {% csrf_token %}
-                                            <button class="btn btn-link" type="submit">{{user.first_name}} {{
-                                                user.last_name}}</button>
+                <button class="btn btn-link" type="submit">{{user.first_name}} {{ user.last_name}}</button>
+      
                                         </form>
                                     </td>
                                     <td scope="row">{{user.email}}</td>
