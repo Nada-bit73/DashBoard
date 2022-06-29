@@ -115,10 +115,7 @@ def addUser(request):
 
 #deleted the user & his/her msgs comments 
 def removeUser(request, userId):
-        user = User.objects.get(id=userId)
-        Message.objects.filter(user_id=userId).delete()
-        Comment.objects.filter(user_id=userId).delete()
-        user.delete()
+        User.objects.get(id=userId).delete()
         print("removed...")
         return redirect("/dashboard/admin")
 
